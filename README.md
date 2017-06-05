@@ -34,15 +34,17 @@ Debian 9 "Stretch"
 
 I use UFW as firewall, Haveged for more entropy and SSHFS for mounting my backup repository:
 
-`apt-get install -y ufw haveged curl git unzip  zip sshfs`
-
+```bash
+apt-get install -y ufw haveged curl git unzip  zip sshfs`
+```
 
 ### Web server
 
 I use NGINX builded with this script: https://github.com/stylersnico/nginx-openssl-chacha-naxsi
 
-`cd /tmp && wget --no-check-certificate https://raw.githubusercontent.com/stylersnico/nginx-openssl-chacha/master/build.sh && sh build.sh`
-
+```bash
+cd /tmp && wget --no-check-certificate https://raw.githubusercontent.com/stylersnico/nginx-openssl-chacha/master/build.sh && sh build.sh`
+```
 
 ### Database server
 
@@ -67,13 +69,17 @@ apt-get install -y php-common php-pear php-zip php7.0-cli php7.0-common php7.0-c
 
 The NodeJS 4 LTS release from nodesource:
 
-`apt-get install -t jessie nodejs`
+```bash
+apt-get install -t jessie nodejs`
+```
 
 ### Veeam Backup for Linux
 
 For doing backup over SSHFS:
 
-`apt-get install -t noname veeam`
+```bash
+apt-get install -t noname veeam`
+```
 
 ### Let's Encrypt 
 
