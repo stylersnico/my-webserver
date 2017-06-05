@@ -1,0 +1,115 @@
+server {
+        listen 62.210.106.114:80;
+        listen [2001:bc8:3d8b:100::100]:80;
+
+        listen 62.210.106.114:443 ssl  http2;
+        listen [2001:bc8:3d8b:100::100]:443 ssl  http2;
+
+        ssl_certificate /etc/letsencrypt/live-ecdsa/abyssproject.net/chain.pem;
+        ssl_certificate_key /etc/letsencrypt/live-ecdsa/abyssproject.net/privkey-p384.pem;
+
+        if ($scheme != "https") {
+            rewrite ^ https://$http_host$request_uri? permanent;
+        }
+
+	if ($http_host = abyssproject.net){
+            return 303 https://www.abyssproject.net$request_uri;
+	}
+
+        server_name abyssproject.net www.abyssproject.net tapvy26gxwepjkp6.onion;
+
+        root   /var/www/wordpress/abyssproject.net/;
+
+        location /.well-known/acme-challenge {
+                alias /var/www/wordpress/abyssproject.net/.well-known/acme-challenge/;
+        }
+
+        index index.html index.htm index.php index.cgi index.pl index.xhtml;
+
+
+
+        error_page 400 /error/400.html;
+        error_page 401 /error/401.html;
+        error_page 403 /error/403.html;
+        error_page 404 /error/404.html;
+        error_page 405 /error/405.html;
+        error_page 500 /error/500.html;
+        error_page 502 /error/502.html;
+        error_page 503 /error/503.html;
+        recursive_error_pages on;
+        location = /error/400.html {
+
+            internal;
+        }
+        location = /error/401.html {
+
+            internal;
+        }
+        location = /error/403.html {
+
+            internal;
+        }
+        location = /error/404.html {
+
+            internal;
+        }
+        location = /error/405.html {
+
+            internal;
+        }
+        location = /error/500.html {
+
+            internal;
+        }
+        location = /error/502.html {
+
+            internal;
+        }
+        location = /error/503.html {
+
+            internal;
+        }
+
+        error_log /var/log/abyssproject.net/error.log;
+        access_log /var/log/abyssproject.net/access.log combined;
+
+        location = /favicon.ico {
+            log_not_found off;
+            access_log off;
+        }
+
+        location = /robots.txt {
+            allow all;
+            log_not_found off;
+            access_log off;
+        }
+
+
+        location ~ \.php$ {
+            try_files /e1d4ea2d073f20faebaf9539ddde872c.htm @php;
+        }
+
+        location @php {
+            try_files $uri =404;
+            include /etc/nginx/fastcgi_params;
+            fastcgi_pass unix:/var/lib/php7.0-fpm/tap.sock;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_intercept_errors on;
+        }
+
+
+
+
+        location / {
+           try_files $uri $uri/ /index.php?$args;
+        }
+
+        location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+            expires                     max;
+            add_header                  Pragma public;
+            add_header                  Cache-Control "public, must-revalidate, proxy-revalidate";
+        }
+
+
+}

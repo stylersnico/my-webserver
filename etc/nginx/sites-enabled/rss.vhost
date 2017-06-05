@@ -1,0 +1,103 @@
+server {
+        listen 62.210.106.114:80;
+        listen [2001:bc8:3d8b:100::100]:80;
+
+        listen 62.210.106.114:443 ssl  http2;
+        listen [2001:bc8:3d8b:100::100]:443 ssl  http2;
+
+	ssl_certificate /etc/letsencrypt/live-ecdsa/rss.nicolas-simond.com/chain.pem;
+	ssl_certificate_key /etc/letsencrypt/live-ecdsa/rss.nicolas-simond.com/privkey-p384.pem;
+
+        server_name rss.nicolas-simond.com www.rss.nicolas-simond.com;
+
+        root   /var/www/rss/;
+
+
+        index index.html index.htm index.php index.cgi index.pl index.xhtml;
+
+        if ($scheme != "https") {
+            rewrite ^ https://$http_host$request_uri? permanent;
+        }
+
+        location /.well-known/acme-challenge {
+                alias /var/www/rss/.well-known/acme-challenge/;
+        }
+
+        error_page 400 /error/400.html;
+        error_page 401 /error/401.html;
+        error_page 403 /error/403.html;
+        error_page 404 /error/404.html;
+        error_page 405 /error/405.html;
+        error_page 500 /error/500.html;
+        error_page 502 /error/502.html;
+        error_page 503 /error/503.html;
+        recursive_error_pages on;
+        location = /error/400.html {
+
+            internal;
+        }
+        location = /error/401.html {
+
+            internal;
+        }
+        location = /error/403.html {
+
+            internal;
+        }
+        location = /error/404.html {
+
+            internal;
+        }
+        location = /error/405.html {
+
+            internal;
+        }
+        location = /error/500.html {
+
+            internal;
+        }
+        location = /error/502.html {
+
+            internal;
+        }
+        location = /error/503.html {
+
+            internal;
+        }
+
+        error_log /var/log/rss.nicolas-simond.com/error.log;
+        access_log /var/log/rss.nicolas-simond.com/access.log combined;
+
+        location = /favicon.ico {
+            log_not_found off;
+            access_log off;
+        }
+
+        location = /robots.txt {
+            allow all;
+            log_not_found off;
+            access_log off;
+        }
+
+#        location ~ \.php$ {
+#            try_files /efd009a9fe5522e313fb4de3556aaa83.htm @php;
+#        }
+
+        location ~ ^.+?\.php(/.*)?$ {
+            try_files $uri =404;
+            include /etc/nginx/fastcgi_params;
+            fastcgi_pass unix:/var/lib/php7.0-fpm/rss.sock;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            fastcgi_index index.php;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_intercept_errors on;
+        }
+
+
+
+
+        location / {
+            try_files $uri $uri/ index.php;
+        }
+
+}
