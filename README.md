@@ -43,7 +43,7 @@ apt-get install -y ufw haveged curl git unzip  zip sshfs
 I use NGINX builded with this script: https://github.com/stylersnico/nginx-openssl-chacha-naxsi
 
 ```bash
-cd /tmp && wget --no-check-certificate https://raw.githubusercontent.com/stylersnico/nginx-openssl-chacha/master/build.sh && sh build.sh`
+cd /tmp && wget --no-check-certificate https://raw.githubusercontent.com/stylersnico/nginx-openssl-chacha/master/build.sh && sh build.sh
 ```
 
 ### Database server
