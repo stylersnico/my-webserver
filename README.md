@@ -35,7 +35,7 @@ Debian 9 "Stretch"
 I use UFW as firewall, Haveged for more entropy and SSHFS for mounting my backup repository:
 
 ```bash
-apt-get install -y ufw haveged curl git unzip  zip sshfs`
+apt-get install -y ufw haveged curl git unzip  zip sshfs
 ```
 
 ### Web server
