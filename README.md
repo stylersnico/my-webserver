@@ -70,7 +70,7 @@ apt-get install -y php-common php-pear php-zip php7.0-cli php7.0-common php7.0-c
 The NodeJS 4 LTS release from nodesource:
 
 ```bash
-apt-get install -t jessie nodejs`
+apt-get install -t jessie nodejs
 ```
 
 ### Veeam Backup for Linux
@@ -78,7 +78,7 @@ apt-get install -t jessie nodejs`
 For doing backup over SSHFS:
 
 ```bash
-apt-get install -t noname veeam`
+apt-get install -t noname veeam
 ```
 
 ### Let's Encrypt 
