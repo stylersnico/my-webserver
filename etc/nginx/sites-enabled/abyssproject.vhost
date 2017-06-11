@@ -29,6 +29,11 @@ server {
         error_log /var/log/abyssproject.net/error.log;
         access_log /var/log/abyssproject.net/access.log combined;
 
+	location /wp-admin {
+            allow 1.2.3.4;
+            deny all;
+        }
+
         location = /favicon.ico {
             log_not_found off;
             access_log off;
