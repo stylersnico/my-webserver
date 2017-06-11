@@ -13,7 +13,7 @@ server {
         root   /var/www/rss/;
 
 
-        index index.html index.htm index.php index.cgi index.pl index.xhtml;
+        index index.html index.php;
 
         if ($scheme != "https") {
             rewrite ^ https://$http_host$request_uri? permanent;
