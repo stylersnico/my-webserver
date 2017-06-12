@@ -24,6 +24,8 @@ This is my collection of configuration files for my webserver.
 
 You can take them to make your one without any configuration panel like Cpanel, Plesk or ISPConfig :)
 
+French blog post : https://www.abyssproject.net/2017/06/monter-serveur-web-debian-9/
+
 
 ## Designed for 
 Debian 9 "Stretch"
