@@ -29,13 +29,18 @@ server {
         error_log /var/log/abyssproject.net/error.log;
         access_log /var/log/abyssproject.net/access.log combined;
 
-	location /wp-admin {
-            allow 1.2.3.4;
+
+	include /var/www/wordpress/abyssproject.net/nginx.conf;
+
+        location /wp-admin {
+            allow 51.15.5.120;
+            allow 176.164.149.133;
             deny all;
         }
 
-	location /xmlrpc.php {
-            allow 1.2.3.4;
+        location /xmlrpc.php {
+            allow 51.15.5.120;
+            allow 176.164.149.133;
             deny all;
         }
 
@@ -64,11 +69,27 @@ server {
             fastcgi_intercept_errors on;
         }
 
-
+	location ~ ^/(status|ping)$ {
+            access_log off;
+            allow 127.0.0.1;
+            allow 62.210.106.114;
+            deny all;
+            include /etc/nginx/fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_pass unix:/var/lib/php7.0-fpm/tap.sock;
+	}
 
 
         location / {
            try_files $uri $uri/ /index.php?$args;
+           SecRulesEnabled;
+           CheckRule "$SQL >= 8" BLOCK;
+           CheckRule "$RFI >= 8" BLOCK;
+           CheckRule "$TRAVERSAL >= 4" BLOCK;
+           CheckRule "$EVADE >= 4" BLOCK;
+           CheckRule "$XSS >= 8" BLOCK;
+           DeniedUrl "/gfy.html"; 
+           include /etc/nginx/naxsi/wordpress.rules;
         }
 
         location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
