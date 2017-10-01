@@ -5,34 +5,39 @@ server {
         listen 62.210.106.114:443 ssl  http2;
         listen [2001:bc8:3d8b:100::100]:443 ssl  http2;
 
-        ssl_certificate /etc/letsencrypt/live-ecdsa/abyssproject.net/chain.pem;
-        ssl_certificate_key /etc/letsencrypt/live-ecdsa/abyssproject.net/privkey-p384.pem;
+        ssl_certificate /etc/letsencrypt/live-ecdsa/nicolas-simond.com/chain.pem;
+        ssl_certificate_key /etc/letsencrypt/live-ecdsa/nicolas-simond.com/privkey-p384.pem;
 
-	more_set_headers 'Public-Key-Pins pin-sha256="ymaHD/rAGZy9JlRlqcc8E36+JCxvW/QduCTbw0BOH+o="; pin-sha256="Ih7zlQOi8s4JRJA0Wb/McTpjCc2gLSgJxKWi/a1ewSw="; pin-sha256="lRaHRedXUsH0Y+OvYYyJhQpwCmBQQusTn9Ts5q2QaEw="; includeSubdomains; max-age=5184000';
+        more_set_headers 'Public-Key-Pins pin-sha256="JcT4oXwFZi1+4YoQkmmFwKBAUGC9QweuVwH6irZa4LE="; pin-sha256="g0GrTHLcsVs1eIf1n5g8wXyyoZncRu0TKeBK/DXZ4f4="; pin-sha256="G2B2TFryZXot5iCQjgMQrGld3jC9ZZl3Z+toXlaHNLM=";  max-age=5184000';
+
 
         if ($scheme != "https") {
             rewrite ^ https://$http_host$request_uri? permanent;
         }
 
-	if ($http_host = abyssproject.net){
-            return 303 https://www.abyssproject.net$request_uri;
+	if ($http_host = nicolas-simond.com){
+            return 303 https://www.nicolas-simond.com$request_uri;
 	}
 
-        server_name www.abyssproject.net abyssproject.net tapvy26gxwepjkp6.onion;
+        if ($http_host = dev.nicolas-simond.com){
+            return 303 https://www.nicolas-simond.com$request_uri;
+        }
 
-        root   /var/www/wordpress/abyssproject.net/;
+        server_name nicolas-simond.com www.nicolas-simond.com nsimondyhzfm26dq.onion dev.nicolas-simond.com;
+
+        root   /var/www/wordpress/nicolas-simond.com/;
 
         location /.well-known/acme-challenge {
-                alias /var/www/wordpress/abyssproject.net/.well-known/acme-challenge/;
+                alias /var/www/wordpress/nicolas-simond.com/.well-known/acme-challenge/;
         }
 
         index index.php;
 
-        error_log /var/log/abyssproject.net/error.log;
+        error_log /var/log/nicolas-simond.com/error.log;
         access_log /var/log/nginx/access.log combined;
 
 
-	include /var/www/wordpress/abyssproject.net/nginx.conf;
+	include /var/www/wordpress/nicolas-simond.com/nginx.conf;
 
         location /wp-admin {
             allow 51.15.5.120;
@@ -65,7 +70,7 @@ server {
         location @php {
             try_files $uri =404;
             include /etc/nginx/fastcgi_params;
-            fastcgi_pass unix:/var/lib/php7.0-fpm/tap.sock;
+            fastcgi_pass unix:/var/lib/php7.0-fpm/ns.sock;
             fastcgi_index index.php;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
             fastcgi_intercept_errors on;
@@ -78,7 +83,7 @@ server {
             deny all;
             include /etc/nginx/fastcgi_params;
             fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-            fastcgi_pass unix:/var/lib/php7.0-fpm/tap.sock;
+            fastcgi_pass unix:/var/lib/php7.0-fpm/ns.sock;
 	}
 
 
@@ -90,14 +95,16 @@ server {
            CheckRule "$TRAVERSAL >= 4" BLOCK;
            CheckRule "$EVADE >= 4" BLOCK;
            CheckRule "$XSS >= 8" BLOCK;
-           DeniedUrl "/gfy.html";
+           DeniedUrl "/gfy.html"; 
+           add_header Access-Control-Allow-Origin "www.nicolas-simond.com";
            include /etc/nginx/naxsi/wordpress.rules;
         }
 
-        location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+        location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|eot|ttf|woff|woff2)$ {
             expires                     max;
             add_header                  Pragma public;
             add_header                  Cache-Control "public, must-revalidate, proxy-revalidate";
+            add_header                  Access-Control-Allow-Origin *;
         }
 
 

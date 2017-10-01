@@ -23,9 +23,8 @@ server {
                 alias /var/www/rss/.well-known/acme-challenge/;
         }
 
-
         error_log /var/log/rss.nicolas-simond.com/error.log;
-        access_log /var/log/rss.nicolas-simond.com/access.log combined;
+        access_log /var/log/nginx/access.log combined;
 
         location = /favicon.ico {
             log_not_found off;
@@ -37,7 +36,6 @@ server {
             log_not_found off;
             access_log off;
         }
-
 
         location ~ ^.+?\.php(/.*)?$ {
             try_files $uri =404;
