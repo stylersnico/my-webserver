@@ -1,0 +1,40 @@
+server {
+        listen 62.210.106.114:80;
+        listen [2001:bc8:3d8b:100::100]:80;
+
+		listen 62.210.106.114:443 ssl  http2;
+        listen [2001:bc8:3d8b:100::100]:443 ssl  http2;
+
+        ssl_certificate /etc/letsencrypt/live-ecdsa/paste.yaute.ninja/chain.pem;
+        ssl_certificate_key /etc/letsencrypt/live-ecdsa/paste.yaute.ninja/privkey-p384.pem;
+
+        server_name paste.yaute.ninja;
+
+        if ($scheme != "https") {
+            rewrite ^ https://$http_host$request_uri? permanent;
+        }
+
+        root /var/www/privatebin/;
+
+	index index.php;
+
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_pass unix:/var/lib/php7.0-fpm/privatebin.sock;
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+        }
+
+        location ~ ^/.well-known/acme-challenge/* {
+                allow all;
+        }
+
+        location = /robots.txt {
+                allow all;
+                log_not_found off;
+                access_log off;
+        }
+
+
+}
