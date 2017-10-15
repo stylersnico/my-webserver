@@ -2,7 +2,7 @@ server {
         listen 62.210.106.114:80;
         listen [2001:bc8:3d8b:100::100]:80;
 
-		listen 62.210.106.114:443 ssl  http2;
+	listen 62.210.106.114:443 ssl  http2;
         listen [2001:bc8:3d8b:100::100]:443 ssl  http2;
 
         ssl_certificate /etc/letsencrypt/live-ecdsa/paste.yaute.ninja/chain.pem;
